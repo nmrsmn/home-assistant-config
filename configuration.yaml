@@ -1,0 +1,74 @@
+# Basic settings
+homeassistant:
+  name: !secret address
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: !secret elevation
+
+  unit_system: metric
+  time_zone: Europe/Amsterdam
+
+default_config:
+
+http:
+    base_url: !secret hass_base_url
+    ssl_certificate: /ssl/fullchain.pem
+    ssl_key: /ssl/privkey.pem
+
+# Text to speech
+tts:
+  - platform: google_translate
+  
+mqtt:
+  broker: !secret cloudmqtt_server
+  port: !secret cloudmqtt_port
+  username: !secret cloudmqtt_user
+  password: !secret cloudmqtt_pass
+  
+owntracks:
+  max_gps_accuracy: 100
+  waypoints: false
+  mqtt_topic: "owntracks/#"
+  events_only: false
+
+# Inputs
+input_select:
+  niels_status_dropdown:
+    name: Niels
+    options:
+      - Home
+      - Just Arrived
+      - Just Left
+      - Away
+      - At Work
+      - Extended Away
+    initial: Home
+  michelle_status_dropdown:
+    name: Michelle
+    options:
+      - Home
+      - Just Arrived
+      - Just Left
+      - Away
+      - At Work
+      - Extended Away
+    initial: Home
+
+# Sensors
+sensor:
+  - platform: template
+    sensors:
+      niels_status:
+        value_template: '{{ states.input_select.niels_status_dropdown.state }}'
+        friendly_name: 'Niels'
+      michelle_status:
+        value_template: '{{ states.input_select.michelle_status_dropdown.state }}'
+        friendly_name: 'Michelle'
+
+# Includes
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+zone: !include zones.yaml
+
+binary_sensor: !include_dir_merge_list binary_sensors/
