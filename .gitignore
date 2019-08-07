@@ -1,0 +1,17 @@
+# Basically ignore all files except for the whitelisted files
+*
+
+# Whitelist files to make sure they are kept
+!*.yaml
+!.gitignore
+!*.md
+
+# Ignore folders.
+.storage
+.cloud
+.google.token
+
+# Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
+ip_bans.yaml
+secrets.yaml
+known_devices.yaml
