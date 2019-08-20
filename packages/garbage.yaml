@@ -1,0 +1,238 @@
+# Booleans for getting reminders
+input_boolean:
+  garbage_ready_for_pickup:
+    name: Afval is aan de weg gezet
+    initial: False
+  garbage_reminder_niels:
+    name: Niels herinneren het afval bij de weg te zetten
+    initial: True
+  garbage_reminder_michelle:
+    name: Michelle herinneren het afval bij de weg te zetten
+    initial: True
+
+# Sensors
+sensor:
+  - platform: garbage
+    postal: !secret postal
+    housenumber: !secret housenumber
+    
+  # Formatted garbage types
+  - platform: template
+    sensors:
+      garbage_gft_formatted:
+        friendly_name: "GFT"
+        entity_picture_template: "/local/afvalwijzer/gft.png"
+        value_template: "{{ states.sensor.garbage_gft.state }}"
+        
+      garbage_papier_formatted:
+        friendly_name: "Papier"
+        entity_picture_template: "/local/afvalwijzer/papier.png"
+        value_template: "{{ states.sensor.garbage_papier.state }}"
+      
+      garbage_pmd_formatted:
+        friendly_name: "PMD"
+        entity_picture_template: "/local/afvalwijzer/plastic.png"
+        value_template: "{{ states.sensor.garbage_pmd.state }}"
+        
+      garbage_restafval_formatted:
+        friendly_name: "Restafval"
+        entity_picture_template: "/local/afvalwijzer/rest.png"
+        value_template: "{{ states.sensor.garbage_restafval.state }}"
+
+# Notification actions
+ios:
+  push:
+    categories:
+      - name: Garbage
+        identifier: 'garbage'
+        actions:
+          - identifier: 'MARK_COMPLETED'
+            title: 'Afval aan de weg gezet'
+            activationMode: 'background'
+            authenticationRequired: no
+            destructive: yes
+            behavior: 'default'
+          - identifier: 'DISMISS_NOTIFICATION'
+            title: 'Niet meer tonen (6 uur)'
+            activationMode: 'background'
+            authenticationRequired: no
+            destructive: no
+            behavior: 'default'
+
+# Automations
+automation:
+  - alias: reset_garbage_ready_for_pickup
+    trigger:
+      platform: state
+      entity_id: input_boolean.garbage_ready_for_pickup
+      to: 'on'
+      for:
+        hours: 18
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.garbage_ready_for_pickup
+
+  - alias: dismiss_garbage_notification_niels
+    trigger:
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: DISMISS_NOTIFICATION
+        sourceDeviceID: ios_iphone_van_niels
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.garbage_reminder_niels
+  - alias: reset_garbage_notification_niels
+    trigger:
+      platform: state
+      entity_id: input_boolean.garbage_reminder_niels
+      to: 'off'
+      for:
+        hours: 6
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.garbage_reminder_niels
+  - alias: dismiss_garbage_notification_michelle
+    trigger:
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: DISMISS_NOTIFICATION
+        sourceDeviceID: ios_iphone_van_niels
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.garbage_reminder_michelle
+  - alias: reset_garbage_notification_michelle
+    trigger:
+      platform: state
+      entity_id: input_boolean.garbage_reminder_michelle
+      to: 'off'
+      for:
+        hours: 6
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.garbage_reminder_michelle
+
+  - alias: mark_garbage_ready_for_pickup
+    trigger:
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: MARK_COMPLETED
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.garbage_ready_for_pickup
+
+  - alias: notify_niels_of_garbage_pickup_tomorrow # Sends reminder every hour
+    trigger:
+      platform: time_pattern
+      minutes: 00
+      seconds: 00
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.garbage_ready_for_pickup
+          state: 'off' 
+        - condition: state
+          entity_id: input_boolean.garbage_reminder_niels
+          state: 'on' 
+        - condition: time
+          after: '18:00:00'
+          before: '23:01:00'
+        - condition: template
+          value_template: "{{ states('sensor.garbage_tomorrow') != 'Geen' }}"
+    action:
+      - service: notify.niels
+        data:
+          title: "Afvalinzameling"
+          message: "Morgen wordt het {{ states.sensor.garbage_tomorrow.state }} opgehaald!"
+          data:
+            push:
+              badge: 0
+              category: 'garbage'
+  - alias: notify_niels_of_garbage_pickup_today # Sends reminder every half hour
+    trigger:
+      platform: time_pattern
+      minutes: '/30'
+      seconds: 00
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.garbage_ready_for_pickup
+          state: 'off' 
+        - condition: state
+          entity_id: input_boolean.garbage_reminder_niels
+          state: 'on' 
+        - condition: time
+          after: '06:00:00'
+          before: '10:30:00'
+        - condition: template
+          value_template: "{{ states('sensor.garbage_tomorrow') != 'Geen' }}"
+    action:
+      - service: notify.niels
+        data:
+          title: "Afvalinzameling"
+          message: "Vandaag wordt het {{ states.sensor.garbage_tomorrow.state }} opgehaald!"
+          data:
+            push:
+              badge: 0
+              category: 'garbage'
+
+  - alias: notify_michelle_of_garbage_pickup_tomorrow # Sends reminder every hour
+    trigger:
+      platform: time_pattern
+      minutes: '/30'
+      seconds: 00
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.garbage_ready_for_pickup
+          state: 'off'
+        - condition: state
+          entity_id: input_boolean.garbage_reminder_michelle
+          state: 'on'
+        - condition: time
+          after: '18:00:00'
+          before: '23:01:00'
+        - condition: template
+          value_template: "{{ states('sensor.garbage_tomorrow') != 'Geen' }}" 
+    action:
+      - service: notify.michelle
+        data:
+          title: "Afvalinzameling"
+          message: "Morgen wordt het {{ states.sensor.garbage_tomorrow.state }} opgehaald!"
+          data:
+            push:
+              badge: 0
+              category: 'garbage'
+  - alias: notify_michelle_of_garbage_pickup_today # Sends reminder every half hour
+    trigger:
+      platform: time_pattern
+      minutes: '/30'
+      seconds: 00
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.garbage_ready_for_pickup
+          state: 'off' 
+        - condition: state
+          entity_id: input_boolean.garbage_reminder_michelle
+          state: 'on' 
+        - condition: time
+          after: '06:00:00'
+          before: '10:30:00'
+        - condition: template
+          value_template: "{{ states('sensor.garbage_tomorrow') != 'Geen' }}"
+    action:
+      - service: notify.michelle
+        data:
+          title: "Afvalinzameling"
+          message: "Vandaag wordt het {{ states.sensor.garbage_tomorrow.state }} opgehaald!"
+          data:
+            push:
+              badge: 0
+              category: 'garbage'

@@ -1,0 +1,8 @@
+{
+    "domain": "garbage",
+    "name": "Garbage Collection",
+    "documentation": "https://github.com/nmrsmn/home-assistant-config/blob/master/README.md",
+    "dependencies": [],
+    "codeowners": ["@nmrsmn"],
+    "requirements": []
+}

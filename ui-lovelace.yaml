@@ -1,0 +1,62 @@
+title: !secret address
+resources:
+  - url: /local/plugins/markdown-mod.js
+    type: js
+views:
+  - id: Home
+    view: true
+    icon: mdi:home
+    name: "Home"
+    path: "home"
+    badges:
+      - person.niels_marsman
+      - person.michelle_van_assen
+    cards:
+      #- type: horizontal-stack
+      #  cards:
+      #    - type: picture-entity
+      #      entity: person.niels
+      #      image: /local/persons/rudolf.jpg
+      #      #show_name: false
+      #      aspect_ratio: 1x1
+      #    - type: picture-entity
+      #      entity: person.michelle
+      #      image: /local/persons/leny.jpg
+      #      show_name: false
+      #      aspect_ratio: 1x1
+    
+      - type: vertical-stack
+        cards:
+        - type: horizontal-stack
+          cards:
+            - type: picture-entity
+              name: Vandaag
+              entity: sensor.garbage_today
+              state_image:
+                'GFT': /local/afvalwijzer/gft.png
+                'Papier': /local/afvalwijzer/papier.png
+                'Restafval': /local/afvalwijzer/rest.png
+                'Plastic': /local/afvalwijzer/plastic.png
+              image: /local/afvalwijzer/kliko.png
+  
+            - type: picture-entity
+              name: Morgen
+              entity: sensor.garbage_tomorrow
+              state_image:
+                'GFT': /local/afvalwijzer/gft.png
+                'Papier': /local/afvalwijzer/papier.png
+                'Restafval': /local/afvalwijzer/rest.png
+                'Plastic': /local/afvalwijzer/plastic.png
+              image: /local/afvalwijzer/kliko.png
+  
+        - type: markdown
+          content: >
+           Vandaag is het <font color='green'>[[ sensor.today.state ]]</font>.
+  
+        - type: glance
+          entities:
+            - sensor.garbage_gft_formatted
+            - sensor.garbage_papier_formatted
+            - sensor.garbage_pmd_formatted
+            - sensor.garbage_restafval_formatted
+  

@@ -7,7 +7,22 @@ homeassistant:
 
   unit_system: metric
   time_zone: Europe/Amsterdam
+  
+  packages: !include_dir_named packages
+  
+# Update
+updater:
+  reporting: false
+  include_used_components: false
+  
+# Enable iOS
+ios:
 
+# Enable yaml mode for lovelace
+lovelace:
+  mode: yaml
+
+# Other config
 default_config:
 
 http:
@@ -31,44 +46,5 @@ owntracks:
   mqtt_topic: "owntracks/#"
   events_only: false
 
-# Inputs
-input_select:
-  niels_status_dropdown:
-    name: Niels
-    options:
-      - Home
-      - Just Arrived
-      - Just Left
-      - Away
-      - At Work
-      - Extended Away
-    initial: Home
-  michelle_status_dropdown:
-    name: Michelle
-    options:
-      - Home
-      - Just Arrived
-      - Just Left
-      - Away
-      - At Work
-      - Extended Away
-    initial: Home
-
-# Sensors
-sensor:
-  - platform: template
-    sensors:
-      niels_status:
-        value_template: '{{ states.input_select.niels_status_dropdown.state }}'
-        friendly_name: 'Niels'
-      michelle_status:
-        value_template: '{{ states.input_select.michelle_status_dropdown.state }}'
-        friendly_name: 'Michelle'
-
 # Includes
-group: !include groups.yaml
-automation: !include automations.yaml
-script: !include scripts.yaml
 zone: !include zones.yaml
-
-binary_sensor: !include_dir_merge_list binary_sensors/

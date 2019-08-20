@@ -1,0 +1,24 @@
+
+sensor:
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
+      - 'date_time'
+      - 'time_date'
+      - 'time_utc'
+      - 'beat'
+      
+  - platform: season
+    type: astronomical
+    
+  - platform: moon
+  
+  - platform: uptime
+  
+  - platform: template
+    sensors:
+      today:
+        friendly_name: "Vandaag"
+        entity_id: sensor.time_date
+        value_template: '{{ now().strftime("%-d %B %Y") }}'

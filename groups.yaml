@@ -1,6 +1,0 @@
-
-people_status:
-  name: People Status
-  entities:
-    - sensor.niels_status
-    - sensor.michelle_status
