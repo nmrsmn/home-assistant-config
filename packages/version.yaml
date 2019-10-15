@@ -1,0 +1,31 @@
+# Sensors
+sensor:
+  - platform: version
+    name: installed_version
+    source: local
+    
+  - platform: version
+    name: latest_version
+    beta: false
+    image: raspberrypi3
+    source: docker
+
+# Automations
+automation:
+  - alias: upgrade_notification
+    initial_state: true
+    trigger: 
+      # Upon new version
+      - platform: state
+        entity_id: sensor.latest_version
+      # Upon starting HA
+      - platform: homeassistant
+        event: start
+    condition:
+      - condition: template
+        value_template: "{{ states('sensor.latest_version') != states('sensor.installed_version') }}"
+    action:
+      - service: notify.niels
+        data_template:
+          title: "Upgrade!"
+          message: "Er staat een Home Assistant update klaar voor Hass.io! Versie {{ states('sensor.latest_version') }} is zojuist gereleased!"
