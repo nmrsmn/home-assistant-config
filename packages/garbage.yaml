@@ -98,7 +98,7 @@ automation:
       event_type: ios.notification_action_fired
       event_data:
         actionName: DISMISS_NOTIFICATION
-        sourceDeviceID: ios_iphone_van_niels
+        sourceDeviceID: ios_iphone_van_michelle
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.garbage_reminder_michelle
@@ -169,12 +169,12 @@ automation:
           after: '06:00:00'
           before: '10:30:00'
         - condition: template
-          value_template: "{{ states('sensor.garbage_tomorrow') != 'Geen' }}"
+          value_template: "{{ states('sensor.garbage_today') != 'Geen' }}"
     action:
       - service: notify.niels
         data:
           title: "Afvalinzameling"
-          message: "Vandaag wordt het {{ states.sensor.garbage_tomorrow.state }} opgehaald!"
+          message: "Vandaag wordt het {{ states.sensor.garbage_today.state }} opgehaald!"
           data:
             push:
               badge: 0
@@ -183,7 +183,7 @@ automation:
   - alias: notify_michelle_of_garbage_pickup_tomorrow # Sends reminder every hour
     trigger:
       platform: time_pattern
-      minutes: '/30'
+      minutes: 00
       seconds: 00
     condition:
       condition: and
@@ -226,12 +226,12 @@ automation:
           after: '06:00:00'
           before: '10:30:00'
         - condition: template
-          value_template: "{{ states('sensor.garbage_tomorrow') != 'Geen' }}"
+          value_template: "{{ states('sensor.garbage_today') != 'Geen' }}"
     action:
       - service: notify.michelle
         data:
           title: "Afvalinzameling"
-          message: "Vandaag wordt het {{ states.sensor.garbage_tomorrow.state }} opgehaald!"
+          message: "Vandaag wordt het {{ states.sensor.garbage_today.state }} opgehaald!"
           data:
             push:
               badge: 0
