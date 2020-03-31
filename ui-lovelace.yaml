@@ -2,6 +2,8 @@ title: !secret address
 resources:
   - url: /local/plugins/markdown-mod.js
     type: js
+  - url: /local/plugins/auto-entities.js
+    type: module
 views:
   - id: Home
     view: true
@@ -52,11 +54,18 @@ views:
         - type: markdown
           content: >
            Vandaag is het <font color='green'>[[ sensor.today.state ]]</font>.
-  
-        - type: glance
-          entities:
-            - sensor.garbage_gft_formatted
-            - sensor.garbage_papier_formatted
-            - sensor.garbage_pmd_formatted
-            - sensor.garbage_restafval_formatted
-  
+
+        - card:
+            type: glance
+          filter:
+            include:
+            - entity_id: sensor.*_formatted
+          sort:
+            attribute: days
+            method: attribute
+            numeric: true
+            count: 4
+          type: 'custom:auto-entities'
+          
+        - type: thermostat
+          entity: climate.tstat_3a657d

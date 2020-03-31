@@ -1,11 +1,11 @@
 - name: Home
   latitude: !secret latitude
   longitude: !secret longitude
-  radius: 35
+  radius: 100
   icon: mdi:home
-- name: Topicus
-  latitude: 52.256475
-  longitude: 6.161879
+- name: Luminis Arnhem
+  latitude: 51.967602
+  longitude: 5.940663
   radius: 300
   icon: mdi:briefcase
 - name: Bakkerij Koenen Huissen

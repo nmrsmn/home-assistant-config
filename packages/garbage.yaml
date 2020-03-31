@@ -15,7 +15,10 @@ sensor:
   - platform: garbage
     postal: !secret postal
     housenumber: !secret housenumber
-    
+    labels:
+      separator: "en"
+      nothing: "Geen"
+
   # Formatted garbage types
   - platform: template
     sensors:
@@ -23,22 +26,51 @@ sensor:
         friendly_name: "GFT"
         entity_picture_template: "/local/afvalwijzer/gft.png"
         value_template: "{{ states.sensor.garbage_gft.state }}"
+        attribute_templates:
+          days: "{{ state_attr('sensor.garbage_gft', 'days') }}"
         
       garbage_papier_formatted:
         friendly_name: "Papier"
         entity_picture_template: "/local/afvalwijzer/papier.png"
         value_template: "{{ states.sensor.garbage_papier.state }}"
+        attribute_templates:
+          days: "{{ state_attr('sensor.garbage_papier', 'days') }}"
       
       garbage_pmd_formatted:
         friendly_name: "PMD"
         entity_picture_template: "/local/afvalwijzer/plastic.png"
         value_template: "{{ states.sensor.garbage_pmd.state }}"
+        attribute_templates:
+          days: "{{ state_attr('sensor.garbage_pmd', 'days') }}"
         
       garbage_restafval_formatted:
         friendly_name: "Restafval"
         entity_picture_template: "/local/afvalwijzer/rest.png"
         value_template: "{{ states.sensor.garbage_restafval.state }}"
+        attribute_templates:
+          days: "{{ state_attr('sensor.garbage_restafval', 'days') }}"
+            
+      garbage_kerstbomen_formatted:
+        friendly_name: "Kerstboom"
+        entity_picture_template: "/local/afvalwijzer/kerstbomen.png"
+        value_template: "{{ states.sensor.garbage_kerstbomen.state }}"
+        attribute_templates:
+          days: "{{ state_attr('sensor.garbage_kerstbomen', 'days') }}"
 
+      garbage_tuinafval_formatted:
+        friendly_name: "Tuinafval"
+        entity_picture_template: "/local/afvalwijzer/tuinafval.png"
+        value_template: "{{ states.sensor.garbage_tuinafval.state }}"
+        attribute_templates:
+          days: "{{ state_attr('sensor.garbage_tuinafval', 'days') }}"
+              
+      garbage_grofvuil_formatted:
+        friendly_name: "Grofvuil"
+        entity_picture_template: "/local/afvalwijzer/grofvuil.png"
+        value_template: "{{ states.sensor.garbage_grofvuil.state }}"
+        attribute_templates:
+            days: "{{ state_attr('sensor.garbage_grofvuil', 'days') }}"
+       
 # Notification actions
 ios:
   push:

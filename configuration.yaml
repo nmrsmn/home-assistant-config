@@ -29,6 +29,11 @@ http:
     base_url: !secret hass_base_url
     ssl_certificate: /ssl/fullchain.pem
     ssl_key: /ssl/privkey.pem
+    
+# Lyric
+lyric:
+  client_id: !secret lyric_client_id
+  client_secret: !secret lyric_client_secret
 
 # Text to speech
 tts:
