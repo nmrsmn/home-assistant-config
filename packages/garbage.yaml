@@ -120,6 +120,17 @@ automation:
       - service: input_boolean.turn_off
         entity_id: input_boolean.garbage_ready_for_pickup
 
+  - alias: mark_garbage_ready_for_pickup
+    trigger:
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: MARK_COMPLETED
+    action:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.garbage_ready_for_pickup
+
+# Automations for Niels
   - alias: dismiss_garbage_notification_niels
     trigger:
       platform: event
@@ -146,27 +157,6 @@ automation:
     action:
       - service: input_boolean.turn_off
         entity_id: input_boolean.garbage_reminder_niels
-      
-  - alias: reset_garbage_notification_niels
-    trigger:
-      platform: state
-      entity_id: input_boolean.garbage_reminder_niels
-      to: 'off'
-      for:
-        hours: 6
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.garbage_reminder_niels
-
-  - alias: mark_garbage_ready_for_pickup
-    trigger:
-      platform: event
-      event_type: ios.notification_action_fired
-      event_data:
-        actionName: MARK_COMPLETED
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.garbage_ready_for_pickup
 
   - alias: notify_niels_of_garbage_pickup_tomorrow # Sends reminder every hour
     trigger:
@@ -182,6 +172,11 @@ automation:
         - condition: state
           entity_id: input_boolean.garbage_reminder_niels
           state: 'on' 
+        - condition: template
+          value_template: >
+            {% set ts_now = as_timestamp(now()) %}
+            {% set ts_snooze = state_attr('input_datetime.garbage_reminder_snoozed_niels', 'timestamp') %}
+            {{ ts_now > ts_snooze }}
         - condition: time
           after: '18:00:00'
           before: '23:01:00'
@@ -196,13 +191,12 @@ automation:
             apns_headers:
               'apns-collapse-id': 'garbage-collection-tomorrow'
             push:
-              badge: 0
-              category: 'garbage'
+              thread-id: 'Afvalinzameling'
 
-  - alias: notify_niels_of_garbage_pickup_today # Sends reminder every half hour
+  - alias: notify_niels_of_garbage_pickup_today # Sends reminder every 30 minutes
     trigger:
       platform: time_pattern
-      minutes: '/5'
+      minutes: '/30'
       seconds: 00
     condition:
       condition: and
@@ -220,7 +214,7 @@ automation:
             {{ ts_now > ts_snooze }}
         - condition: time
           after: '06:00:00'
-          before: '14:30:00'
+          before: '10:30:00'
         - condition: template
           value_template: "{{ states('sensor.garbage_today') != 'Geen' }}"
     action:
@@ -232,6 +226,102 @@ automation:
             apns_headers:
               'apns-collapse-id': 'garbage-collection-today'
             push:
-              badge: 0
-              category: 'garbage'
+              thread-id: 'Afvalinzameling'
 
+# Automations for Michelle
+  - alias: dismiss_garbage_notification_michelle
+    trigger:
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: DISMISS_NOTIFICATION
+        sourceDeviceID: iphone_van_michelle
+    action:
+      - service: input_datetime.set_datetime
+        entity_id: input_datetime.garbage_reminder_snoozed_michelle
+        data_template:
+          datetime: >-
+            {% set ts_now = as_timestamp(now()) | int %}
+            {% set ts_a = ts_now + (60 * 60 * 6) %}
+            {{ ts_a | timestamp_custom("%Y-%m-%d %H:%M:%S") }}
+            
+  - alias: stop_garbage_notification_michelle
+    trigger:
+      platform: event
+      event_type: ios.notification_action_fired
+      event_data:
+        actionName: STOP_NOTIFICATION
+        sourceDeviceID: iphone_van_michelle
+    action:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.garbage_reminder_michelle
+
+  - alias: notify_michelle_of_garbage_pickup_tomorrow # Sends reminder every hour
+    trigger:
+      platform: time_pattern
+      minutes: 00
+      seconds: 00
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.garbage_ready_for_pickup
+          state: 'off' 
+        - condition: state
+          entity_id: input_boolean.garbage_reminder_michelle
+          state: 'on' 
+        - condition: template
+          value_template: >
+            {% set ts_now = as_timestamp(now()) %}
+            {% set ts_snooze = state_attr('input_datetime.garbage_reminder_snoozed_michelle', 'timestamp') %}
+            {{ ts_now > ts_snooze }}
+        - condition: time
+          after: '19:00:00'
+          before: '23:01:00'
+        - condition: template
+          value_template: "{{ states('sensor.garbage_tomorrow') != 'Geen' }}"
+    action:
+      - service: notify.michelle
+        data:
+          title: "Afvalinzameling"
+          message: "Morgen wordt het {{ states.sensor.garbage_tomorrow.state }} opgehaald!"
+          data:
+            apns_headers:
+              'apns-collapse-id': 'garbage-collection-tomorrow'
+            push:
+              thread-id: 'Afvalinzameling'
+
+  - alias: notify_michelle_of_garbage_pickup_today # Sends reminder every 30 minutes
+    trigger:
+      platform: time_pattern
+      minutes: '/30'
+      seconds: 00
+    condition:
+      condition: and
+      conditions:
+        - condition: state
+          entity_id: input_boolean.garbage_ready_for_pickup
+          state: 'off' 
+        - condition: state
+          entity_id: input_boolean.garbage_reminder_michelle
+          state: 'on'
+        - condition: template
+          value_template: >
+            {% set ts_now = as_timestamp(now()) %}
+            {% set ts_snooze = state_attr('input_datetime.garbage_reminder_snoozed_michelle', 'timestamp') %}
+            {{ ts_now > ts_snooze }}
+        - condition: time
+          after: '06:00:00'
+          before: '10:30:00'
+        - condition: template
+          value_template: "{{ states('sensor.garbage_today') != 'Geen' }}"
+    action:
+      - service: notify.michelle
+        data:
+          title: "Afvalinzameling"
+          message: "Vandaag wordt het {{ states.sensor.garbage_today.state }} opgehaald!"
+          data:
+            apns_headers:
+              'apns-collapse-id': 'garbage-collection-today'
+            push:
+              thread-id: 'Afvalinzameling'
