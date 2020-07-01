@@ -205,6 +205,10 @@ class GarbageService(object):
                 converted = datetime.strptime(item['date'], '%Y-%m-%d').strftime('%d-%m-%Y')
                         
                 if name not in garbage_type:
+                    display_name = name.capitalize()
+                    if name == 'gft':
+                        display_name = 'GFT'
+                    
                     if item['date'] >= self._today:
                         garbage_type[name] = name
                         
@@ -220,11 +224,11 @@ class GarbageService(object):
                         garbage_today['key'] = "today"
                         
                         if len(multi_garbage_today) == 0:
-                            garbage_today['value'] = name
+                            garbage_today['value'] = display_name
                         else:
-                            garbage_today['value'] = ', '.join(multi_garbage_today) + ' ' + separator + ' ' + name
+                            garbage_today['value'] = ', '.join(multi_garbage_today) + ' ' + separator + ' ' + display_name
                         
-                        multi_garbage_today.append(name)
+                        multi_garbage_today.append(display_name)
                         garbage_schedule_today.append(garbage_today)
 
                     if item['date'] == self._tomorrow:
@@ -232,11 +236,11 @@ class GarbageService(object):
                         garbage_tomorrow['key'] = "tomorrow"
                         
                         if len(multi_garbage_tomorrow) == 0:
-                            garbage_tomorrow['value'] = name
+                            garbage_tomorrow['value'] = display_name
                         else:
-                            garbage_tomorrow['value'] = ', '.join(multi_garbage_tomorrow) + ' ' + separator + ' ' + name
+                            garbage_tomorrow['value'] = ', '.join(multi_garbage_tomorrow) + ' ' + separator + ' ' + display_name
                         
-                        multi_garbage_tomorrow.append(name)
+                        multi_garbage_tomorrow.append(display_name)
                         garbage_schedule_tomorrow.append(garbage_tomorrow)
                         
             if len(garbage_schedule_today) == 0:

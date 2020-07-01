@@ -15,7 +15,7 @@ notify:
   - name: niels
     platform: group
     services:
-      - service: ios_iphone_van_niels
+      - service: mobile_app_iphone_van_niels
   - name: michelle
     platform: group
     services:
@@ -28,3 +28,4 @@ notify:
   - name: none
     platform: group
     services:
+    

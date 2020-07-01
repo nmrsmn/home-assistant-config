@@ -14,26 +14,33 @@ homeassistant:
 updater:
   reporting: false
   include_used_components: false
-  
-# Enable iOS
-ios:
 
 # Enable yaml mode for lovelace
 lovelace:
   mode: yaml
 
+influxdb:
+  host: nmrsmn.duckdns.org
+  port: 8086
+  database: homeassistant
+  username: !secret influxdb_user
+  password: !secret influxdb_pass
+  ssl: true
+#  verify_ssl: true
+  max_retries: 5
+  default_measurement: state
+
 # Other config
 default_config:
 
 http:
-    base_url: !secret hass_base_url
-    ssl_certificate: /ssl/fullchain.pem
-    ssl_key: /ssl/privkey.pem
+  ssl_certificate: /ssl/fullchain.pem
+  ssl_key: /ssl/privkey.pem
     
 # Lyric
-lyric:
-  client_id: !secret lyric_client_id
-  client_secret: !secret lyric_client_secret
+#lyric:
+#  client_id: !secret lyric_client_id
+#  client_secret: !secret lyric_client_secret
 
 # Text to speech
 tts:
@@ -44,12 +51,6 @@ mqtt:
   port: !secret cloudmqtt_port
   username: !secret cloudmqtt_user
   password: !secret cloudmqtt_pass
-  
-owntracks:
-  max_gps_accuracy: 100
-  waypoints: false
-  mqtt_topic: "owntracks/#"
-  events_only: false
 
 # Includes
 zone: !include zones.yaml

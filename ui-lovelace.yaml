@@ -1,8 +1,8 @@
 title: !secret address
 resources:
-  - url: /local/plugins/markdown-mod.js
-    type: js
   - url: /local/plugins/auto-entities.js
+    type: module
+  - url: /local/plugins/card-mod.js
     type: module
 views:
   - id: Home
@@ -52,8 +52,8 @@ views:
               image: /local/afvalwijzer/kliko.png
   
         - type: markdown
-          content: >
-           Vandaag is het <font color='green'>[[ sensor.today.state ]]</font>.
+          content: |
+           Vandaag is het <font color='green'>{{ states.sensor.today.state }}</font>.
 
         - card:
             type: glance
@@ -69,3 +69,34 @@ views:
           
         - type: thermostat
           entity: climate.tstat_3a657d
+          
+  - id: Usage
+    panel: true
+    icon: mdi:gauge
+    name: "Verbruik"
+    path: "usage"
+    cards:
+      - type: custom:mod-card
+        style: |
+         ha-card { padding:10px; }
+        card:
+          type: horizontal-stack
+          cards:
+            - type: vertical-stack
+              cards:
+                - type: entities
+                  title: Meterstanden
+                  show_header_toggle: false
+                  entities:
+                    - entity: sensor.dsmr_energy_delivered_t1
+                    - entity: sensor.dsmr_energy_delivered_t2
+                    - entity: sensor.dsmr_energy_returned_t1
+                    - entity: sensor.dsmr_energy_returned_t2
+            - type: vertical-stack
+              cards:
+                - type: sensor
+                  entity: sensor.dsmr_power_delivered
+                  graph: line
+#                - type: sensor
+#                  entity: sensor.dsmr_power_returned
+#                  graph: line

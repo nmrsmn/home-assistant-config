@@ -1,0 +1,113 @@
+# Sensors
+sensor:
+  - platform: mqtt
+    name: dsmr_energy_delivered_t1
+    state_topic: "DSMR-API/energy_delivered_tariff1"
+    unit_of_measurement: "kWh"
+    value_template: "{{ value_json.energy_delivered_tariff1[0].value | round(3) }}"
+
+  - platform: mqtt
+    name: dsmr_energy_delivered_t2
+    state_topic: "DSMR-API/energy_delivered_tariff2"
+    unit_of_measurement: "kWh"
+    value_template: "{{ value_json.energy_delivered_tariff2[0].value | round(3) }}"
+
+  - platform: mqtt
+    name: dsmr_energy_returned_t1
+    state_topic: "DSMR-API/energy_returned_tariff1"
+    unit_of_measurement: "kWh"
+    value_template: "{{ value_json.energy_returned_tariff1[0].value | round(3) }}"
+
+  - platform: mqtt
+    name: dsmr_energy_returned_t2
+    state_topic: "DSMR-API/energy_returned_tariff2"
+    unit_of_measurement: "kWh"
+    value_template: "{{ value_json.energy_returned_tariff2[0].value | round(3) }}"
+
+  - platform: mqtt
+    name: dsmr_power_delivered
+    state_topic: "DSMR-API/power_delivered"
+    unit_of_measurement: "kW"
+    value_template: "{{ value_json.power_delivered[0].value | round(3) }}"
+
+  - platform: mqtt
+    name: dsmr_power_delivered_l1
+    state_topic: "DSMR-API/power_delivered_l1"
+    unit_of_measurement: "Watt"
+    value_template: "{{ (value_json.power_delivered_l1[0].value | float * 1000.0) | round(1) }}"
+
+  - platform: mqtt
+    name: dsmr_power_delivered_l2
+    state_topic: "DSMR-API/power_delivered_l2"
+    unit_of_measurement: "Watt"
+    value_template: "{{ (value_json.power_delivered_l2[0].value | float * 1000.0) | round(1) }}"
+
+  - platform: mqtt
+    name: dsmr_power_delivered_l3
+    state_topic: "DSMR-API/power_delivered_l3"
+    unit_of_measurement: "Watt"
+    value_template: "{{ (value_json.power_delivered_l3[0].value | float * 1000.0) | round(1) }}"
+
+  - platform: mqtt
+    name: dsmr_power_returned
+    state_topic: "DSMR-API/power_returned"
+    unit_of_measurement: "kW"
+    value_template: "{{ value_json.power_delivered[0].value | round(3) }}"
+
+  - platform: mqtt
+    name: dsmr_power_returned_l1
+    state_topic: "DSMR-API/power_returned_l1"
+    unit_of_measurement: "Watt"
+    value_template: "{{ (value_json.power_returned_l1[0].value | float * 1000.0) | round(1) }}"
+
+  - platform: mqtt
+    name: dsmr_power_returned_l2
+    state_topic: "DSMR-API/power_returned_l2"
+    unit_of_measurement: "Watt"
+    value_template: "{{ (value_json.power_returned_l2[0].value | float * 1000.0) | round(1) }}"
+
+  - platform: mqtt
+    name: dsmr_power_returned_l3
+    state_topic: "DSMR-API/power_returned_l3"
+    unit_of_measurement: "Watt"
+    value_template: "{{ (value_json.power_returned_l3[0].value | float * 1000.0) | round(1) }}"
+
+  - platform: mqtt
+    name: dsmr_last_update
+    state_topic: "DSMR-API/timestamp" 
+    value_template: >
+      {{      value_json.timestamp[0].value[4:6] + "-" + 
+              value_json.timestamp[0].value[2:4] + "-" + 
+         "20"+value_json.timestamp[0].value[0:2] + "   " + 
+              value_json.timestamp[0].value[6:8] + ":" + 
+              value_json.timestamp[0].value[8:10] + ":" + 
+              value_json.timestamp[0].value[10:13] }}
+
+homeassistant:
+  customize:
+    sensor.dsmr_energy_delivered_t1:
+      friendly_name: "Energie gebruikt (tarief 1)"
+    sensor.dsmr_energy_delivered_t2:
+      friendly_name: "Energie gebruikt (tarief 2)"
+    sensor.dsmr_energy_returned_t1:
+      friendly_name: "Energie opgewekt (tarief 1)"
+    sensor.dsmr_energy_returned_t2:
+      friendly_name: "Energie opgewekt (tarief 2)"
+    sensor.dsmr_power_delivered:
+      friendly_name: "Vermogen gebruikt"
+    sensor.dsmr_power_delivered_l1:
+      friendly_name: "Vermogen gebruikt (l1)"
+    sensor.dsmr_power_delivered_l2:
+      friendly_name: "Vermogen gebruikt (l2)"
+    sensor.dsmr_power_delivered_l3:
+      friendly_name: "Vermogen gebruikt (l3)"
+    sensor.dsmr_power_returned:
+      friendly_name: "Energie opgewekt"
+    sensor.dsmr_power_returned_l1:
+      friendly_name: "Vermogen opgewekt (l1)"
+    sensor.dsmr_power_returned_l2:
+      friendly_name: "Vermogen opgewekt (l2)"
+    sensor.dsmr_power_returned_l3:
+      friendly_name: "Vermogen opgewekt (l2)"
+    sensor.dsmr_last_update:
+      friendly_name: "Laatste Update"
