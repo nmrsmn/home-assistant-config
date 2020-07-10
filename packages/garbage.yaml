@@ -192,6 +192,7 @@ automation:
               'apns-collapse-id': 'garbage-collection-tomorrow'
             push:
               thread-id: 'Afvalinzameling'
+              category: 'garbage'
 
   - alias: notify_niels_of_garbage_pickup_today # Sends reminder every 30 minutes
     trigger:
@@ -227,6 +228,7 @@ automation:
               'apns-collapse-id': 'garbage-collection-today'
             push:
               thread-id: 'Afvalinzameling'
+              category: 'garbage'
 
 # Automations for Michelle
   - alias: dismiss_garbage_notification_michelle
@@ -290,6 +292,7 @@ automation:
               'apns-collapse-id': 'garbage-collection-tomorrow'
             push:
               thread-id: 'Afvalinzameling'
+              category: 'garbage'
 
   - alias: notify_michelle_of_garbage_pickup_today # Sends reminder every 30 minutes
     trigger:
@@ -325,3 +328,4 @@ automation:
               'apns-collapse-id': 'garbage-collection-today'
             push:
               thread-id: 'Afvalinzameling'
+              category: 'garbage'

@@ -15,6 +15,9 @@ updater:
   reporting: false
   include_used_components: false
 
+# Frontend
+frontend:
+
 # Enable yaml mode for lovelace
 lovelace:
   mode: yaml
@@ -26,9 +29,12 @@ influxdb:
   username: !secret influxdb_user
   password: !secret influxdb_pass
   ssl: true
-#  verify_ssl: true
   max_retries: 5
   default_measurement: state
+
+zwave:
+  usb_path: /dev/ttyAMA0
+  network_key: !secret zwave_network_key
 
 # Other config
 default_config:
@@ -37,11 +43,6 @@ http:
   ssl_certificate: /ssl/fullchain.pem
   ssl_key: /ssl/privkey.pem
     
-# Lyric
-#lyric:
-#  client_id: !secret lyric_client_id
-#  client_secret: !secret lyric_client_secret
-
 # Text to speech
 tts:
   - platform: google_translate
