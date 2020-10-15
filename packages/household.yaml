@@ -4,11 +4,6 @@ binary_sensor:
     country: Netherlands
     workdays: [mon, tue, wed, thu, fri]
     excludes: [sat, sun, holiday]
-  - platform: workday
-    name: workday-michelle
-    country: Netherlands
-    workdays: [wed, thu, fri, sat]
-    excludes: [sun, holiday]
 
 # Notifications
 notify: 
@@ -16,15 +11,10 @@ notify:
     platform: group
     services:
       - service: mobile_app_iphone_van_niels
-  - name: michelle
-    platform: group
-    services:
-      - service: mobile_app_iphone_van_michelle
   - name: household
     platform: group
     services:
       - service: niels
-      - service: michelle
       - service: lg_49nano866na_woonkamer
   - name: none
     platform: group
