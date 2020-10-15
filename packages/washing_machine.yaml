@@ -1,0 +1,70 @@
+switch:
+  - platform: mqtt
+    name: washing_machine
+    state_topic: "tasmota/washing_machine/stat/POWER"
+    command_topic: "tasmota/washing_machine/cmnd/POWER"
+    availability_topic: "tasmota/washing_machine/tele/LWT"
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    retain: false
+
+sensor:
+  - platform: mqtt
+    name: washing_machine_today
+    state_topic: "tasmota/washing_machine/tele/SENSOR"
+    availability_topic: "tasmota/washing_machine/tele/LWT"
+    value_template: '{{ value_json["ENERGY"]["Today"] }}'
+    unit_of_measurement: "kWh"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+
+  - platform: mqtt
+    name: washing_machine_current
+    state_topic: "tasmota/washing_machine/tele/SENSOR"
+    availability_topic: "tasmota/washing_machine/tele/LWT"
+    value_template: '{{ value_json["ENERGY"]["Power"] }}'
+    unit_of_measurement: "W"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+
+binary_sensor:
+  - platform: template
+    sensors:
+      washing_machine_running:
+        friendly_name: "Wasmachine bezig"
+        delay_on:
+          minutes: 5
+        delay_off:
+          minutes: 7
+        value_template: >-
+          {{ states('sensor.washing_machine_current') | float > 10 }}
+        icon_template: >-
+          {% if is_state("binary_sensor.washing_machine_running", "on") %}
+            mdi:washing-machine
+          {% else %}
+            mdi:washing-machine-off
+          {% endif %}
+
+automation:
+  - id: washing_machine_done_notification
+    alias: "Wasmachine klaar notificatie"
+    initial_state: 'on'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.washing_machine_running
+        from: 'on'
+        to: 'off'
+    action:
+#      - service: switch.turn_off
+#        entity_id: switch.washing_machine
+      - service: notify.household
+        data:
+          title: "Wasmachine"
+          message: "De wasmachine is klaar!"
+          data:
+            apns_headers:
+              'apns-collapse-id': 'washing-machine-done'
+            push:
+              thread-id: 'Wasmachine'

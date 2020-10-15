@@ -25,6 +25,7 @@ notify:
     services:
       - service: niels
       - service: michelle
+      - service: lg_49nano866na_woonkamer
   - name: none
     platform: group
     services:

@@ -10,6 +10,12 @@ homeassistant:
   
   packages: !include_dir_named packages
   
+  customize_glob:
+    "switch.dryer":
+      icon: mdi:tumble-dryer
+    "switch.washing-machine":
+      icon: mdi:washing-machine
+  
 # Update
 updater:
   reporting: false
@@ -22,19 +28,19 @@ frontend:
 lovelace:
   mode: yaml
 
-influxdb:
-  host: nmrsmn.duckdns.org
-  port: 8086
-  database: homeassistant
-  username: !secret influxdb_user
-  password: !secret influxdb_pass
-  ssl: true
-  max_retries: 5
-  default_measurement: state
+#influxdb:
+#  host: nmrsmn.duckdns.org
+#  port: 8086
+#  database: homeassistant
+#  username: !secret influxdb_user
+#  password: !secret influxdb_pass
+#  ssl: true
+#  max_retries: 5
+#  default_measurement: state
 
-zwave:
-  usb_path: /dev/ttyAMA0
-  network_key: !secret zwave_network_key
+#zwave:
+#  usb_path: /dev/ttyAMA0
+#  network_key: !secret zwave_network_key
 
 # Other config
 default_config:
