@@ -12,7 +12,6 @@ views:
     path: "home"
     badges:
       - person.niels_marsman
-      - person.michelle_van_assen
     cards:
       #- type: horizontal-stack
       #  cards:
