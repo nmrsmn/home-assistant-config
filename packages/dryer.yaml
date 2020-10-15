@@ -57,8 +57,8 @@ automation:
         from: 'on'
         to: 'off'
     action:
-      - service: switch.turn_off
-        entity_id: switch.dryer
+#      - service: switch.turn_off
+#        entity_id: switch.dryer
       - service: notify.household
         data:
           title: "Droger"
