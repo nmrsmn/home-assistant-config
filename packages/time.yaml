@@ -20,5 +20,4 @@ sensor:
     sensors:
       today:
         friendly_name: "Vandaag"
-        entity_id: sensor.time_date
         value_template: '{{ now().strftime("%-d %B %Y") }}'

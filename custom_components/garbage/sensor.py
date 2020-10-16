@@ -36,7 +36,7 @@ CONST_LABEL_SEPARATOR_DEFAULT = 'and'
 SCAN_INTERVAL = timedelta(seconds=30)
 UPDATE_EVERY = timedelta(seconds=3600)
 
-CONST_JSON_URL = "https://json.mijnafvalwijzer.nl/?method=postcodecheck&postcode={0}&street=&huisnummer={1}&toevoeging={2}&platform=phone&langs=nl&"
+CONST_JSON_URL = "https://api.mijnafvalwijzer.nl/webservices/appsinput/?apikey=5ef443e778f41c4f75c69459eea6e6ae0c2d92de729aa0fc61653815fbd6a8ca&method=postcodecheck&postcode={0}&street=&huisnummer={1}&toevoeging={2}&platform=phone&langs=nl"
 
 # Configuration
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({

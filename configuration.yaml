@@ -15,14 +15,14 @@ homeassistant:
       icon: mdi:tumble-dryer
     "switch.washing-machine":
       icon: mdi:washing-machine
-  
+
 # Update
-updater:
-  reporting: false
-  include_used_components: false
+#updater:
+#  reporting: false
+#  include_used_components: false
 
 # Frontend
-frontend:
+#frontend:
 
 # Enable yaml mode for lovelace
 lovelace:
@@ -56,8 +56,8 @@ tts:
 mqtt:
   broker: !secret cloudmqtt_server
   port: !secret cloudmqtt_port
-  username: !secret cloudmqtt_user
-  password: !secret cloudmqtt_pass
+#  username: !secret cloudmqtt_user
+#  password: !secret cloudmqtt_pass
 
 # Includes
 zone: !include zones.yaml
